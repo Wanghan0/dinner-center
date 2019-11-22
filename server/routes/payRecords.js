@@ -218,7 +218,9 @@ function findTimeForDel(params){
   Overtime.find(params).exec(function (err, doc) {
     if(doc[0]){
       let target={_id:doc[0]._id};
-      Overtime.remove(target)
+      Overtime.remove(target,(err)=>{
+        console.log('删除err',err)
+      })
     }
   });
 }

@@ -7,11 +7,12 @@
 
 let baseUrl = '';
 
-if (process.env.NODE_ENV == 'development') { //本地开发环境
-  // baseUrl = 'http://172.31.68.62:18888/bd-perms-server';  //杨豪
-  // baseUrl = 'http://172.31.68.42:18888/bd-perms-server';  //李瑞
+if (process.env.NODE_ENV === 'development') { //本地开发环境
+
   baseUrl = 'http://172.31.68.53:3000/';
-} else if (process.env.NODE_ENV == 'production') { //测试或线上环境
+
+} else if (process.env.NODE_ENV === 'production') { //测试或线上环境
+
   baseUrl = 'http://172.31.217.31:3000/';
   // baseUrl = 'http://172.31.68.53:3000/';
 }
