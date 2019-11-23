@@ -33,8 +33,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors(
   {
     credentials: true,
-    origin: 'http://172.31.217.31:3000', // 服务器地址
-    // origin: 'http://localhost:9999', // 本地
+    // origin: 'http://172.31.217.31:3000', // 服务器地址
+    origin: 'http://localhost:9999', // 本地
     // origin: 'http://localhost:3000', // 本地
     // origin: '*' // 这样会出错
   }

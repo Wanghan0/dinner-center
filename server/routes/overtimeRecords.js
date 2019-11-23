@@ -45,45 +45,42 @@ router.get('/list',function (req,res,next) {
 });
 router.post('/add',function (req,res,next) {
   var params={};
-  if(req.body.name) params.name=req.body.name;
-  if(req.body.date) params.date=req.body.date;
+  // if(req.body.name) params.name=req.body.name;
+  // if(req.body.date) params.date=req.body.date;
+  let orList=[];
+  var date=JSON.parse(req.body.date)
+  date.forEach(item=>{
+    orList.push({
+      date:item
+    })
+  });
+  params={
+    $and : [
+      { name : req.body.name },
+      { $or : orList }
+    ]
+  };
   Overtime.find(params).exec(function (err, doc) {
     if(doc && doc.length>0){
+      let exitDate='';
+      let exitDateArr=[];
+      doc.forEach(item=>{
+        exitDate+=item.date;
+        exitDateArr.push(item.date)
+      });
       res.json({
         code: '400',
-        message: '该用户当天已有加班记录',
-        data: ''
+        message: `该用户${exitDate}已有加班记录`,
+        data:exitDateArr
       })
     }else {
-      var overtime=new Overtime(
-        {
-          name:req.body.name,
-          date:req.body.date,
-          status:'created',
-          overtimeType:req.body.overtimeType,
-          payType:req.body.payType,
-          payForMe:req.body.payForMe,
-          payForWho:req.body.payForWho,
-          payMoney:req.body.payMoney,
-          remark:req.body.remark,
-          createTime:new Date(),
-          updateTime:new Date()
-        }
-      );
-      overtime.save(function (err) {
-        if(err){
-          res.json({
-            code: '400',
-            message: err.message,
-            data: ''
-          })
-        }else {
-          res.json({
-            code: '200',
-            message: '新增成功！',
-            data: 'suc'
-          })
-        }
+      date.forEach(item=>{
+        addOvertime({...req.body,date:item})
+      });
+      res.json({
+        code: '200',
+        message: '添加成功！',
+        data: 'suc'
       })
     }
   });
@@ -138,7 +135,45 @@ router.post('/del',function (req,res,next) {
   })
 });
 
+function addOvertime(condition){
+  var overtime=new Overtime(
+    {
+      name:condition.name,
+      date:condition.date,
+      status:'created',
+      overtimeType:condition.overtimeType,
+      payType:condition.payType,
+      payForMe:condition.payForMe,
+      payForWho:condition.payForWho,
+      payMoney:condition.payMoney,
+      remark:condition.remark,
+      createTime:new Date(),
+      updateTime:new Date()
+    }
+  );
+  overtime.save(function (err) {
+    if(err){
+      console.log('新增加班记录 err', err)
+    }
+  })
+}
 
+
+ function format (fmt) { //author: meizz
+  var o = {
+    "M+": this.getMonth() + 1, //月份
+    "d+": this.getDate(), //日
+    "h+": this.getHours(), //小时
+    "m+": this.getMinutes(), //分
+    "s+": this.getSeconds(), //秒
+    "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+    "S": this.getMilliseconds() //毫秒
+  };
+  if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+  for (var k in o)
+    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+  return fmt;
+}
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
