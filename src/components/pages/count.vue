@@ -173,7 +173,10 @@
         });
         this.summation={snacksFund:0,selfCount:0,rest:0};
         for(let i in countResult){
-          if(countResult[i].selfCount===0){
+          if(countResult[i].selfCount<0){
+            countResult[i].snacksFund=0;
+            countResult[i].rest=countResult[i].selfCount;
+          }else if(countResult[i].selfCount===0){
             countResult[i].snacksFund=0;
             countResult[i].rest=0;
           }else if(countResult[i].selfCount>0 && countResult[i].selfCount<=35){
@@ -183,16 +186,6 @@
             countResult[i].snacksFund=35;
             countResult[i].rest=countResult[i].selfCount-35;
           }
-          // if(countResult[i].type==='in' && countResult[i].selfCount>=35){
-          //   countResult[i].snacksFund=35;
-          //   countResult[i].rest=countResult[i].selfCount-35;
-          // }else if(countResult[i].type==='in' && countResult[i].selfCount<35){
-          //   countResult[i].snacksFund=0;
-          //   countResult[i].rest=countResult[i].selfCount;
-          // }else if(countResult[i].type==='out'){
-          //   countResult[i].snacksFund=countResult[i].selfCount;
-          //   countResult[i].rest=0;
-          // }
           this.countResult.push({
             name:i,
             selfCount:countResult[i].selfCount,
