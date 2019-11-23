@@ -6,10 +6,15 @@
         <!--<a href="http://fund.eastmoney.com/" target="_blank">天天基金网</a>-->
         <!--<a href="https://oa-portal.eastmoney.com" target="_blank">OA门户</a>-->
       </p>
-      <p class="fr">
-        <a href="javascript:;">您好！</a>
-        <span>|</span>
-        <a href="javascript:;" @click="logoutSafely">安全退出</a></p>
+      <p class="fr header-select">
+        <!--<a href="javascript:;">您好！</a>-->
+        <!--<span>|</span>-->
+        <!--<a href="javascript:;" @click="logoutSafely">安全退出</a>-->
+        <!--<label>当前操作人：</label>-->
+        <el-select v-model="operator" placeholder="请选择当前操作人" clearable filterable style="width: 160px">
+          <el-option v-for="item in userList" :value="item.name" :label="item.name" :key="item._id"></el-option>
+        </el-select>
+      </p>
     </div>
     <div class="pub_nav">
       <h1 class="pub_logo">大数据管理平台</h1>
@@ -23,7 +28,19 @@ import {baseUrl} from '../../api/env.js'
 export default {
   data () {
     return {
-
+      operator:''
+    }
+  },
+  computed:{
+    userList(){
+      return this.$store.state.userList || [];
+    }
+  },
+  watch:{
+    operator:{
+      handler:function (val) {
+        this.$store.commit('curUserChange',val)
+      }
     }
   },
   created(){
@@ -49,6 +66,7 @@ export default {
     z-index: 10;
   }
   .pub_top{
+    color: #b4b3b3;
     height: 36px;
     line-height: 36px;
     padding: 0 30px;

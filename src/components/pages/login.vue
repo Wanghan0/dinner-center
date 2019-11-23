@@ -52,7 +52,7 @@
       login(){
         this.$refs.ruleForm.validate().then(()=>{
           login(this.loginData).then(res => {
-            this.store.commit('curUserChange',this.loginData.username)
+            this.$store.commit('curUserChange',this.loginData.username)
             // this.$message({type:'success',message:'删除成功！'})
           }).catch(err =>{
 

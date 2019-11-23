@@ -39,6 +39,7 @@
   import {addPay, delPay, editPay, getPayList} from "../../api";
   import editForm from "../common/editForm";
   import searchForm from "../common/searchForm";
+  import {options} from './datePickerOptions.js'
   export default {
     name: '',
     components: {
@@ -51,6 +52,7 @@
         tableLoading:false,
         showEditForm:false,
         editData:{},
+        condition:{},
         searchParam:{
           page:1,
           pageSize:15
@@ -68,12 +70,12 @@
 
         ],
         fields:{
-          payer:{type: 'select', label: '付款人',options:[],keyValue:{label:'name',value:'name'}},
+          payer:{type: 'select',value:'', label: '付款人',options:[],keyValue:{label:'name',value:'name'}},
           payDay:{type: 'date', label: '付款日期'},
-          dateRange:{type: 'daterange', label: '付款日期范围', required:true},
+          dateRange:{type: 'daterange',value:[], label: '付款日期范围', required:true,pickerOptions:options},
         },
         editFields:{
-          payer:{type: 'select', label: '付款人', required:true,
+          payer:{type: 'select',value:'', label: '付款人', required:true,
             options:[],keyValue:{label:'name',value:'name'}},
           eater:{type: 'select', label: '加班人',value:[],multiple:true,filterable:false, required:true,
             options:[],keyValue:{label:'name',value:'name'}},
@@ -86,15 +88,40 @@
     computed: {
     },
     watch:{
+      '$store.state.userList':{
+        handler:function (val) {
+          let userList=val || [];
+          this.fields.payer.options=userList;
+          this.editFields.payer.options=userList;
+          this.editFields.eater.options=userList;
+        },
+        immediate:true
+      },
+      '$store.state.curUser':{
+        handler:function (val) {
+          this.fields.payer.value=val;
+          this.editFields.payer.value=val;
+          this.condition.payer=val;
+          this.$nextTick(()=>{
+            this.getThreeMonth();
+          });
+          this.init();
+        },
+        immediate:true
+      }
     },
     created() {
-      this.init();
-      let userList=this.$store.state.userList || [];
-      this.editFields.payer.options=userList;
-      this.editFields.eater.options=userList;
-      this.fields.payer.options=userList;
     },
     methods: {
+      //获取近三个月日期范围
+      getThreeMonth(){
+        let now = new Date();
+        let start=now.getTime()-3*30*24*60*60*1000;
+        let dateRange=[new Date(start).format('yyyy-MM-dd'),new Date(now).format('yyyy-MM-dd')];
+        this.fields.dateRange.value=dateRange;
+        this.condition.dateBegin=dateRange[0];
+        this.condition.dateEnd=dateRange[1];
+      },
       init(){
         this.tableLoading=true;
         getPayList({...this.searchParam,...this.condition}).then(res => {

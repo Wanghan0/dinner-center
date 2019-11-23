@@ -38,6 +38,7 @@
   import {addOvertime, delOvertime, editOvertime, getOvertimeList} from "../../api";
   import editForm from "../common/editForm";
   import searchForm from "../common/searchForm";
+  import {options} from './datePickerOptions.js'
   export default {
     name: '',
     components: {
@@ -50,6 +51,7 @@
         tableLoading:false,
         showEditForm:false,
         editData:{},
+        condition:{},
         searchParam:{
           page:1,
           pageSize:15
@@ -71,19 +73,19 @@
 
         ],
         fields:{
-          name:{type: 'select', label: '加班人', required:true,
+          name:{type: 'select', label: '加班人', required:true,value:'',
             options:[],keyValue:{label:'name',value:'name'}},
           status:{type: 'select', label: '状态', required:true,
             options:[{label:'新建',value:'created'},{label:'已交发票',value:'counted'},{label:'已报销',value:'applied'}]},
           payType:{type: 'select', label: '支付类型', required:true,
             options:[{label:'自费',value:'self'},{label:'他付',value:'other'}]},
           date:{type: 'date', label: '加班日期'},
-          dateRange:{type: 'daterange', label: '加班日期范围', required:true},
+          dateRange:{type: 'daterange',value:[], label: '加班日期范围', required:true,pickerOptions:options},
         },
         editFields:{
-          name:{type: 'select', label: '加班人', required:true,
+          name:{type: 'select', label: '加班人', required:true,value:'',
             options:[],keyValue:{label:'name',value:'name'}},
-          date:{type: 'date', label: '加班日期', required:true},
+          date:{type: 'dates', label: '加班日期', required:true,editDisabled:true},
           // overtimeType:{type: 'select',value:'dinner', label: '加班类型', required:true,
           //   options:[{label:'晚饭',value:'dinner'},{label:'周末午饭',value:'lunch'}]},
           payType:{type: 'select',value:'self', label: '支付类型', required:true,
@@ -97,14 +99,40 @@
     computed: {
     },
     watch:{
+      '$store.state.userList':{
+        handler:function (val) {
+          let userList=val || [];
+          this.fields.name.options=userList;
+          this.editFields.name.options=userList;
+          this.editFields.payForMe.options=userList;
+        },
+        immediate:true
+      },
+      '$store.state.curUser':{
+        handler:function (val) {
+          this.fields.name.value=val;
+          this.editFields.name.value=val;
+          this.condition.name=val;
+          this.$nextTick(()=>{
+            this.getThreeMonth();
+          });
+          this.init();
+        },
+        immediate:true
+      }
     },
     created() {
-      this.init();
-      this.fields.name.options=this.$store.state.userList || [];
-      this.editFields.name.options=this.$store.state.userList || [];
-      this.editFields.payForMe.options=this.$store.state.userList || [];
     },
     methods: {
+      //获取近三个月日期范围
+      getThreeMonth(){
+        let now = new Date();
+        let start=now.getTime()-3*30*24*60*60*1000;
+        let dateRange=[new Date(start).format('yyyy-MM-dd'),new Date(now).format('yyyy-MM-dd')];
+        this.fields.dateRange.value=dateRange;
+        this.condition.dateBegin=dateRange[0];
+        this.condition.dateEnd=dateRange[1];
+      },
       init(){
         this.tableLoading=true;
         getOvertimeList({...this.searchParam,...this.condition}).then(res => {
@@ -151,12 +179,22 @@
         if(this.editData._id){
           api= editOvertime;
           Msg='修改成功！';
+        }else {
+          params.date=JSON.stringify(params.date);
         }
+        // return
         api(params).then(res => {
           this.init();
           this.showEditForm=false;
           this.$message({type:'success',message:Msg})
-        }).catch(err =>{});
+        }).catch(err =>{
+          let errDates='';
+          err.data.forEach(item=>{
+            errDates+=new Date(item).format('yyyy-MM-dd');
+            errDates+=','
+          });
+          this.$message({type:'warning',message:`${errDates}已存在加班记录！`})
+        });
       },
     }
   }

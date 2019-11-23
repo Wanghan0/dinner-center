@@ -67,7 +67,7 @@ export const getOvertimeList = (params) => {
 };
 // 新增
 export const addOvertime = (params) => {
-  return http.fetchPost('overtime/add',params)
+  return http.fetchPost('overtime/add',params,true)
 };
 // 编辑
 export const editOvertime = (params) => {

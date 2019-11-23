@@ -38,15 +38,15 @@
         </tr>
         <tr v-for="(item,index) in countResult">
           <td>{{item.name}}</td>
-          <td>{{item.selfCount}}</td>
-          <td>{{item.snacksFund}}</td>
-          <td>{{item.rest}}</td>
+          <td>{{transNumShow(item.selfCount)}}</td>
+          <td>{{transNumShow(item.snacksFund)}}</td>
+          <td>{{transNumShow(item.rest)}}</td>
         </tr>
         <tr>
           <th>合计</th>
-          <td>{{summation.selfCount}}</td>
-          <td>{{summation.snacksFund}}</td>
-          <td>{{summation.rest}}</td>
+          <td>{{transNumShow(summation.selfCount)}}</td>
+          <td>{{transNumShow(summation.snacksFund)}}</td>
+          <td>{{transNumShow(summation.rest)}}</td>
         </tr>
       </table>
       <div class="btn_footer">
@@ -246,6 +246,13 @@
           this.$message({type:'success',message:Msg})
         }).catch(err =>{});
       },
+      transNumShow(num){
+        if(num && typeof num==='number'){
+          return num.toFixed(0)
+        }else {
+          return 0
+        }
+      }
     }
   }
 

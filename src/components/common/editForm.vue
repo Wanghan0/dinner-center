@@ -88,6 +88,12 @@
           :disabled="itemDisabled(item)"
           size="small" type="date"  :value-format="item.valueFormat || 'yyyy-MM-dd'" placeholder="选择日期"  >
         </el-date-picker>
+        <el-date-picker
+          v-else-if="item.type === 'dates'"
+          v-model="formDataNew[key]"
+          :disabled="itemDisabled(item)"
+          size="small" type="dates"  :value-format="item.valueFormat || 'yyyy-MM-dd'" placeholder="选择日期"  >
+        </el-date-picker>
         <el-checkbox v-else-if="item.type === 'checkbox'"  v-model="formDataNew[key]" ></el-checkbox>
       </el-form-item>
       <slot name="el-form-item" :item="formDataNew"></slot>
