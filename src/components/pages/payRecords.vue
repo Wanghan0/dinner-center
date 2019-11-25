@@ -104,8 +104,8 @@
           this.condition.payer=val;
           this.$nextTick(()=>{
             this.getThreeMonth();
+            this.init();
           });
-          this.init();
         },
         immediate:true
       }

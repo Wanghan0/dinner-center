@@ -83,7 +83,7 @@
           dateRange:{type: 'daterange',value:[], label: '加班日期范围', required:true,pickerOptions:options},
         },
         editFields:{
-          name:{type: 'select', label: '加班人', required:true,value:'',
+          name:{type: 'select', value:'',label: '加班人', required:true,editDisabled:true,
             options:[],keyValue:{label:'name',value:'name'}},
           date:{type: 'dates', label: '加班日期', required:true,editDisabled:true},
           // overtimeType:{type: 'select',value:'dinner', label: '加班类型', required:true,
@@ -92,6 +92,7 @@
             options:[{label:'自费',value:'self'},{label:'他付',value:'other'}]},
           payForMe:{type: 'select', label: '谁付的',
             options:[],keyValue:{label:'name',value:'name'}},
+          payMoney:{type: 'number', label: '金额'},
           remark:{type: 'input', label: '备注'},
         },
       }
@@ -115,8 +116,8 @@
           this.condition.name=val;
           this.$nextTick(()=>{
             this.getThreeMonth();
+            this.init();
           });
-          this.init();
         },
         immediate:true
       }
@@ -173,6 +174,12 @@
         if(params.payType==='self'){
           params.payMoney=35;
           params.payForMe=null;
+        }else if(!params.payForMe){
+          this.$message({type:'warning',message:'请填写谁付的！'});
+          return
+        }else if(!params.payMoney){
+          this.$message({type:'warning',message:'请填写金额！'});
+          return
         }
         let api=addOvertime;
         let Msg='新增成功！';
@@ -193,7 +200,7 @@
             errDates+=new Date(item).format('yyyy-MM-dd');
             errDates+=','
           });
-          this.$message({type:'warning',message:`${errDates}已存在加班记录！`})
+          this.$message({type:'warning',message:`该加班人${errDates}已存在加班记录！`})
         });
       },
     }
