@@ -2,9 +2,7 @@
   <div class="pub_header">
     <div class="pub_top">
       <p class="fl">
-        <!--<a href="http://www.eastmoney.com/" target="_blank">东方财富网</a>-->
-        <!--<a href="http://fund.eastmoney.com/" target="_blank">天天基金网</a>-->
-        <!--<a href="https://oa-portal.eastmoney.com" target="_blank">OA门户</a>-->
+        <a href="https://github.com/Wanghan0/dinner-center" target="_blank">使用说明</a>
       </p>
       <p class="fr header-select">
         <!--<a href="javascript:;">您好！</a>-->
