@@ -127,8 +127,8 @@
     methods: {
       //获取近三个月日期范围
       getThreeMonth(){
-        let now = new Date();
-        let start=now.getTime()-3*30*24*60*60*1000;
+        let now = new Date().getTime()+24*60*60*1000;
+        let start=now-3*31*24*60*60*1000;
         let dateRange=[new Date(start).format('yyyy-MM-dd'),new Date(now).format('yyyy-MM-dd')];
         this.fields.dateRange.value=dateRange;
         this.condition.dateBegin=dateRange[0];
@@ -147,6 +147,8 @@
         this.condition={...val};
         this.condition.dateBegin=val.dateRange?val.dateRange[0]:null;
         this.condition.dateEnd=val.dateRange?val.dateRange[1]:null;
+        this.searchParam.page=1;
+        this.totalPage=0;
         this.init()
       },
       //翻页

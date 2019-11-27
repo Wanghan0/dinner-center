@@ -29,15 +29,21 @@
         </tr>
         <tr v-for="(item,index) in countResult">
           <td>{{item.name || '-'}}</td>
-          <td>{{item.selfCount || '-'}}</td>
-          <td>{{item.snacksFund || '-'}}</td>
-          <td>{{item.rest || '-'}}</td>
+          <!--<td>{{item.selfCount || '-'}}</td>-->
+          <!--<td>{{item.snacksFund || '-'}}</td>-->
+          <!--<td>{{item.rest || '-'}}</td>-->
+          <td>{{transNumShow(item.selfCount)}}</td>
+          <td>{{transNumShow(item.snacksFund)}}</td>
+          <td>{{transNumShow(item.rest)}}</td>
         </tr>
         <tr v-if="countResult.length>0">
           <th>合计</th>
-          <td>{{summation.selfCount || '-'}}</td>
-          <td>{{summation.snacksFund || '-'}}</td>
-          <td>{{summation.rest || '-'}}</td>
+          <!--<td>{{summation.selfCount || '-'}}</td>-->
+          <!--<td>{{summation.snacksFund || '-'}}</td>-->
+          <!--<td>{{summation.rest || '-'}}</td>-->
+          <td>{{transNumShow(summation.selfCount)}}</td>
+          <td>{{transNumShow(summation.snacksFund)}}</td>
+          <td>{{transNumShow(summation.rest)}}</td>
         </tr>
         <tr v-else><td colspan="100">暂无数据</td></tr>
       </table>
@@ -69,6 +75,7 @@
           pageSize:15
         },
         totalPage:0,
+        condition:{status:'counted'},
         constants:[],
         titles:[
           {name:'统计开始时间',value:'countDateBegin',timeFormat:'yyyy-MM-dd'},
@@ -79,7 +86,7 @@
 
         ],
         fields:{
-          status:{type: 'select', label: '状态',options:[{label:'已交发票',value:'counted'},{label:'已报销',value:'applied'}]},
+          status:{type: 'select',value:'counted', label: '状态',options:[{label:'已交发票',value:'counted'},{label:'已报销',value:'applied'}]},
           countDateBegin:{type: 'date', label: '统计开始时间'},
           countDateEnd:{type: 'date', label: '统计截止时间'},
         },
@@ -113,6 +120,8 @@
         this.condition={...val};
         this.condition.dateBegin=val.date?val.date[0]:null;
         this.condition.dateEnd=val.date?val.date[1]:null;
+        this.searchParam.page=1;
+        this.totalPage=0;
         this.init()
       },
       //翻页
@@ -128,6 +137,13 @@
             this.$message({type:'success',message:'报销成功！'})
           }).catch(err =>{});
         }).catch(()=>{})
+      },
+      transNumShow(num){
+        if(num && typeof num==='number'){
+          return num.toFixed(0)
+        }else {
+          return 0
+        }
       }
     }
   }
