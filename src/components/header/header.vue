@@ -2,7 +2,7 @@
   <div class="pub_header">
     <div class="pub_top">
       <p class="fl">
-        <a href="https://github.com/Wanghan0/dinner-center" target="_blank">使用说明</a>
+        <a href="https://www.yuque.com/xuepudingelangke/kpwwkp/yevqzn" target="_blank">使用说明</a>
       </p>
       <p class="fr header-select">
         <!--<a href="javascript:;">您好！</a>-->
