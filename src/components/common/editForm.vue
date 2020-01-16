@@ -1,8 +1,10 @@
 <!--created by wanghan-->
 <template>
   <div class="area-form">
-    <el-form ref="form" :inline="true" :rules="rules" :model="formDataNew"  class="demo-form-inline" :label-width="labelWidth">
-      <el-form-item :label="item.label" v-for="(item,key,index) in fields" :key="index" :prop="key" :required="item.required">
+    <el-form ref="form" :inline="true" :rules="rules" :model="formDataNew" class="demo-form-inline"
+             :label-width="labelWidth">
+      <el-form-item :label="item.label" v-for="(item,key,index) in fields" :key="index" :prop="key"
+                    :required="item.required">
         <el-input
           v-if="item.type === 'input'"
           v-model.trim="formDataNew[key]"
@@ -80,21 +82,21 @@
           v-else-if="item.type === 'datetime'"
           v-model="formDataNew[key]"
           :disabled="itemDisabled(item)"
-          size="small" type="datetime"  :value-format="item.valueFormat || 'yyyy-MM-dd HH:mm:ss'" placeholder="选择时间范围">
+          size="small" type="datetime" :value-format="item.valueFormat || 'yyyy-MM-dd HH:mm:ss'" placeholder="选择时间范围">
         </el-date-picker>
         <el-date-picker
           v-else-if="item.type === 'date'"
           v-model="formDataNew[key]"
           :disabled="itemDisabled(item)"
-          size="small" type="date"  :value-format="item.valueFormat || 'yyyy-MM-dd'" placeholder="选择日期"  >
+          size="small" type="date" :value-format="item.valueFormat || 'yyyy-MM-dd'" placeholder="选择日期">
         </el-date-picker>
         <el-date-picker
           v-else-if="item.type === 'dates'"
           v-model="formDataNew[key]"
           :disabled="itemDisabled(item)"
-          size="small" type="dates"  :value-format="item.valueFormat || 'yyyy-MM-dd'" placeholder="选择日期"  >
+          size="small" type="dates" :value-format="item.valueFormat || 'yyyy-MM-dd'" placeholder="选择日期">
         </el-date-picker>
-        <el-checkbox v-else-if="item.type === 'checkbox'"  v-model="formDataNew[key]" ></el-checkbox>
+        <el-checkbox v-else-if="item.type === 'checkbox'" v-model="formDataNew[key]"></el-checkbox>
       </el-form-item>
       <slot name="el-form-item" :item="formDataNew"></slot>
     </el-form>
@@ -108,24 +110,29 @@
 <script type="text/javascript">
   export default {
     name: '',
-    components: {
-    },
-    props:['fields','rules','labelWidth','editData','watchTimely'],
+    components: {},
+    props:[
+      'fields', //表单字段
+      'rules', //字段校验
+      'labelWidth', //表单label的宽度
+      'editData', //表单对象
+      'keyField', //唯一主键
+      'watchTimely', //是否实时监听表单字段的值
+    ],
     data() {
       return {
-        formDataNew:{}
+        formDataNew: {}
       }
     },
-    computed: {
-    },
-    watch:{
-      formDataNew:{
-        handler:function (val) {
-          if(this.watchTimely){
-            this.$emit('update',val)
+    computed: {},
+    watch: {
+      formDataNew: {
+        handler: function (val) {
+          if (this.watchTimely) {
+            this.$emit('update', val)
           }
         },
-        deep:true
+        deep: true
       }
     },
     created() {
@@ -133,36 +140,38 @@
     },
     methods: {
       //是否禁填
-      itemDisabled(item){
-        if(item.disabled){
+      itemDisabled(item) {
+        if (item.disabled) {
           return true;
-        }else if(this.editData._id && item.editDisabled){ //修改时禁填
+        } else if (this.editData._id && item.editDisabled) { //修改时禁填
           return true
-        }else {
+        } else {
           return false;
         }
       },
       //field对象转化为表单所需
-      init(){
-        if(this.editData._id || this.editData._id===0){
-          this.formDataNew={...this.editData}
-        }else {
-          Object.keys(this.fields).forEach(key=>{
-            if(this.editData[key]===0 || this.fields[key].value===0){//兼容0
-              this.formDataNew[key]=0;
-            }if(this.fields[key].value===undefined && this.fields[key].type==='number'){//el-input-number会将null显示为0，undefined才显示空
-              this.formDataNew[key]=undefined;
-            }else {//新增,要求新增时editData置空
-              this.formDataNew[key]=this.fields[key].value || null;
+      init() {
+        if (this.editData._id || this.editData._id === 0) {
+          this.formDataNew = {...this.editData}
+        } else {
+          Object.keys(this.fields).forEach(key => {
+            if (this.editData[key] === 0 || this.fields[key].value === 0) {//兼容0
+              this.formDataNew[key] = 0;
+            }
+            if (this.fields[key].value === undefined && this.fields[key].type === 'number') {//el-input-number会将null显示为0，undefined才显示空
+              this.formDataNew[key] = undefined;
+            } else {//新增,要求新增时editData置空
+              this.formDataNew[key] = this.fields[key].value || null;
             }
           });
         }
-        this.formDataNew={...this.formDataNew};  //用来更新视图，否则表单验证效果不刷新
+        this.formDataNew = {...this.formDataNew};  //用来更新视图，否则表单验证效果不刷新
       },
-      save(){
-        this.$refs.form.validate().then(()=>{
-          this.$emit('save',this.formDataNew)
-        }).catch(()=>{})
+      save() {
+        this.$refs.form.validate().then(() => {
+          this.$emit('save', this.formDataNew)
+        }).catch(() => {
+        })
       },
     }
   }
@@ -170,13 +179,15 @@
 </script>
 
 <style scoped>
-  .area-form{
+  .area-form {
     margin: 10px 0;
   }
-  .el-select,.el-input,.el-radio-group,.el-input-number--small{
+
+  .el-select, .el-input, .el-radio-group, .el-input-number--small {
     width: 220px;
   }
-  .footer{
+
+  .footer {
     text-align: center;
   }
 </style>
